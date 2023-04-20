@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xmlns:util="http://www.springframework.org/schema/util"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <tx:annotation-driven/>
+    <context:component-scan base-package="CRUDOperation"/>
+    <!-- View Resolver -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/views/"/>
+    <property name="suffix" value=".jsp"/>
+    </bean>
+       <!-- Data Source Implementing Class -->
+    <bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+     <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+     <property name="url" value="jdbc:mysql://Localhost:3306/productcrud"/>
+     <property name="username" value="root"/>
+     <property name="password" value="root"/>
+    </bean>
+    
+    <bean id="factory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+  <!-- Data Source -->
+    <property name="dataSource" ref="ds"/>
+    <!-- Hibernate Properties -->
+    <property name="hibernateProperties">
+    <props>
+    <prop key="hibernate.dialect">org.hibernate.dialect.MySQL55Dialect</prop>
+    <prop key="hibernate.show_sql">true</prop>
+    <prop key="hibernate.hbm2ddl.auto">update</prop>
+    </props>
+    </property>
+    <!-- Annotated Class -->
+    <property name="annotatedClasses">
+    <list>
+    <value>CRUDOperation.Model.Product</value>
+    </list>
+    </property>
+    </bean>
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+    <property name="sessionFactory" ref="factory"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="factory"/>
+    </bean>
+    </beans>
